@@ -2,17 +2,65 @@ from requests_html import HTMLSession
 from bs4 import BeautifulSoup
 
 
+def unescape(s):
+    s = s.replace('&lt;', '<')
+    s = s.replace('&gt;', '>')
+    s = s.replace('&amp;', '&')
+    return s
+
+
+class Manga:
+    def __init__(self, title=None, manga_id=None, manga_url=None,
+            cover_url=None, chapters={}):
+        self.title = title
+        self.manga_id = manga_id
+        self.manga_url = manga_url
+        self.cover_url = cover_url
+        self.chapters = chapters
+
 class MangaSee:
-    base_url = 'https://mangasee123.com/'
+    base_url = 'https://mangasee123.com'
     session = HTMLSession()
 
-    def __init__(self, manga_url):
-        self.manga_url = manga_url
-        self.cover_url = None
-        self.chapters = {}
-        
 
-    def get_info(self):
+    def __init__(self):
+        self.directory_url = f'{self.base_url}/directory/'
+        self.directory = {}
+
+
+    def get_directory(self):
+        """
+        Populates directory, dictionary of title-manga pairs.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+        req = self.session.get(self.directory_url)
+        req.html.render(sleep=5)
+        html = req.html.html
+        soup = BeautifulSoup(html, 'html.parser')
+        data = soup.find_all('a', {'class':'ttip ng-binding'})
+        for series in data:
+            title = series.string
+            manga_id = series['href'].split('/')[-1]
+            manga_url = f"{self.base_url}{series['href']}"
+            manga = title.lower()
+            manga_html = unescape(series['title'])
+            manga_soup = BeautifulSoup(manga_html, 'html.parser')
+            print(manga_soup.prettify())
+            cover_url = manga_soup.img['src']
+            print(cover_url)
+            self.directory[manga] = Manga(
+                    title, 
+                    manga_id, 
+                    manga_url,
+                    cover_url)
+
+
+    def get_manga(self, manga):
         """
         Args:
             None.
@@ -20,52 +68,32 @@ class MangaSee:
         Returns:
             None.
         """
-        req = self.session.get(self.manga_url)
+        req = self.session.get(manga.manga_url)
         req.html.render(sleep=5)
         html = req.html.html
         soup = BeautifulSoup(html, 'html.parser')
-        self.cover_url = soup.find('img', {'class':'img-fluid bottom-5'})['src']
-        self.manga_id = self.manga_url.split('/')[-1]
-        
+        # need to populate self.chapters
+        # self.chapters = {}
 
-    def get_chapter(self, ch, debug=False):
+
+    def get_chapter(self, ch):
         """
+        Populates chapters[ch]['pages'] with a list of page urls.
+        
         Args:
             ch: chapter number.
-            debug: True prints debug messages.
 
         Returns:
             None.
         """
         chapter_url = f'{self.base_url}/read-online/{self.manga_id}-chapter-{ch}.html'
+        self.chapter[ch]['url'] = chapter_url
+        
         req = self.session.get(chapter_url)
         req.html.render(sleep=5)
         html = req.html.html
         soup = BeautifulSoup(html, 'html.parser')
-        images = [page['src'] for page in soup.find_all('img',
+        self.chapter[ch]['pages'] = [page['src'] for page in soup.find_all('img',
             {'class':'img-fluid'})]
-        for i, image in enumerate(images):
-            pg = str(i+1)
-            filename = f'{ch.zfill(4)}-{pg.zfill(3)}.png'
-            image_req = session.get(image)
-            content = image_req.content
-            save(filename, content)
-            if debug:
-                print(f'ch.{ch} pg.{pg}')
-        if debug:
-            print('done')
 
 
-def save(self, filename, content):
-    """
-    Args:
-        filename: name of the file you want to write to.
-        content: content you want to write to the file.
-
-    Returns:
-        None.
-    """
-    with open(filename, 'wb') as f:
-        f.write(content)
-        f.close()
-            
