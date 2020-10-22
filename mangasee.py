@@ -62,6 +62,8 @@ class MangaSee:
 
     def get_manga(self, manga):
         """
+        Populates chapters with chapter and the chapter url pairs.
+
         Args:
             None.
 
@@ -76,7 +78,7 @@ class MangaSee:
         # self.chapters = {}
 
 
-    def get_chapter(self, ch):
+    def get_chapter(self, manga, ch):
         """
         Populates chapters[ch]['pages'] with a list of page urls.
         
@@ -86,7 +88,7 @@ class MangaSee:
         Returns:
             None.
         """
-        chapter_url = f'{self.base_url}/read-online/{self.manga_id}-chapter-{ch}.html'
+        chapter_url = f'{self.base_url}/read-online/{manga.manga_id}-chapter-{ch}.html'
         self.chapter[ch]['url'] = chapter_url
         
         req = self.session.get(chapter_url)
