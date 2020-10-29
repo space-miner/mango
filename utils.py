@@ -1,8 +1,8 @@
-import subprocess
+import os
 
 
-def convert():
-    """
+def convert_to_pdf(filename='out'):
+    '''
     Uses ImageMagick to convert all images in directory to pdf. 
 
     Args:
@@ -10,12 +10,12 @@ def convert():
 
     Returns:
         None.
-    """
-    subprocess.run(['convert', '*.png', 'out.pdf'])
+    '''
+    os.system(f'convert *.png {filename}.pdf')
 
 
-def clean():
-    """
+def remove_images():
+    '''
     Clean directory by removing downloaded images.
 
     Args:
@@ -23,5 +23,5 @@ def clean():
 
     Returns:
         None.
-    """
-    subprocess.run(['rm', '*.png'])
+    '''
+    os.system('rm *.png')
