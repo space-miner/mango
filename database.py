@@ -20,28 +20,25 @@ class DatabaseManager:
     def create_table(self, table_name, columns):
         columns_with_types = [
             f'{column_name} {data_type}'
-            for column_name, data_type in columns.items()
-        ]
+            for column_name, data_type in columns.items()]
         self._execute(
             f'''
             CREATE TABLE IF NOT EXISTS {table_name}
             ({', '.join(columns_with_types)});
-            '''
-        )
+            ''')
 
 
     def add(self, table_name, data):
-        placeholder = ', '.join('?' * len(data))
+        placeholders = ', '.join('?' * len(data))
         column_names = ', '.join(data.keys())
-        colunns_values = tuple(data.values())
+        column_values = tuple(data.values())
         self._execute(
             f'''
             INSERT INTO {table_name}
             ({column_names})
             VALUES ({placeholders});
             ''',
-            column_values
-        )
+            column_values)
 
 
     def delete(self, table_name, criteria):
@@ -52,5 +49,4 @@ class DatabaseManager:
             DELETE FROM {table_name}
             WHERE {delete_criteria};
             ''',
-            tuple(criteria.values())
-        )
+            tuple(criteria.values()))
