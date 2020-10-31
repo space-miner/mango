@@ -8,7 +8,6 @@ from database import DatabaseManager
 class MangaSee:
     base_url = 'https://mangasee123.com'
     directory_url = f'{base_url}/directory/'
-    directory = {}
     db = DatabaseManager('mangasee.db')
 
     def __init__(self):
@@ -129,7 +128,7 @@ class MangaSee:
         '''
         search = self.db.select('mangasee', {'title_id': title})
         if len(search) == 1:
-            _, _, manga_id, _, _ = search[0]
+            id_, title_id, manga_id, manga_url, cover_url = search[0]
         chapter_url = f'{self.base_url}/read-online/{manga_id}-chapter-{ch}.html'
         soup = self._soupify(chapter_url)
         for page in soup.find_all('img', 'img-fluid'):
