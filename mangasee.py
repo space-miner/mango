@@ -76,17 +76,22 @@ class MangaSee:
             'cover_url': 'text'})
 
 
-    def _add_manga(self, data):
+    def _add_manga(self, manga_data):
         '''
+        Adds manga to directory database.
+
         Args:
-            data:
-        '''
-        self.db.add('mangasee', data)
+            manga_data: Manga information (dict).
 
-
-    def get_directory(self):
+        Returns:
+            None.
         '''
-        Populates directory, dictionary of title-manga pairs.
+        self.db.add('mangasee', manga_data)
+
+    
+    def update(self):
+        '''
+        Update directory database, dictionary of title-manga pairs.
 
         Args:
             None.
@@ -112,7 +117,6 @@ class MangaSee:
             self._add_manga(manga)
 
 
-    # NEED TO UPDATE TO WORK WITH DB
     def get_chapter(self, title, ch):
         '''
         Populates chapter pages with direct link to page image.
@@ -123,13 +127,13 @@ class MangaSee:
         Returns:
             None.
         '''
-        title = title.lower()
-        manga = self.directory[title]
-        manga_id = manga['manga_id']
+        search = self.db.select('mangasee', {'title_id': title})
+        if len(search) == 1:
+            _, _, manga_id, _, _ = search[0]
         chapter_url = f'{self.base_url}/read-online/{manga_id}-chapter-{ch}.html'
         soup = self._soupify(chapter_url)
-        manga['chapters'][ch] = [page['src'] for page in soup.find_all('img', 'img-fluid')]
-        for url in manga['chapters'][ch]:
+        for page in soup.find_all('img', 'img-fluid'):
+            url = page['src']
             self._save_image(url)
         utils.convert_to_pdf(ch)
         utils.remove_images()
