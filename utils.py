@@ -12,7 +12,7 @@ def convert_to_pdf(filename='out'):
         None.
     '''
     os.system(f'convert *.png {filename}.pdf')
-
+    print(f'Created {filename}.pdf')
 
 def remove_images():
     '''
@@ -25,3 +25,4 @@ def remove_images():
         None.
     '''
     os.system('rm *.png')
+    print('Images have been removed.')
