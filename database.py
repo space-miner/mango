@@ -60,4 +60,6 @@ class DatabaseManager:
             query += f' WHERE {select_criteria}'
         return self._execute(
             query,
-            tuple(criteria.values())).fetchall()
+            tuple(criteria.values()))
+
+    
