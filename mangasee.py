@@ -195,12 +195,9 @@ class MangaSee:
         Returns:
             None.
         '''
-        a = self.get_title()
-        print(a)
-        id_, title, manga_id, manga_url, cover_url = a
+        id_, title, manga_id, manga_url, cover_url = self.get_title()
         ch = self.get_chapter()
         chapter_url = f'{self.base_url}/read-online/{manga_id}-chapter-{ch}.html'
-        print(chapter_url)
         soup = self._soupify(chapter_url)
         for page in soup.find_all('img', 'img-fluid'):
             url = page['src']
@@ -210,4 +207,13 @@ class MangaSee:
 
 
     def exit(self):
+        '''
+        Exits program
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        '''
         sys.exit()
