@@ -100,27 +100,6 @@ class MangaSee:
         # need to implement fuzzy search
         cursor = self.database.select('mangasee', {'title': title})
         return cursor.fetchall()
-
-
-    def search(self):
-        title = input('Enter title: ')
-        matches = self._search(title)
-        if matches:
-            self.print_matches(matches)
-        else:
-            print(f'{title} has 0 matches. Try again.')
-        search_again = input('Search again (Y/N)? ')
-        if search_again.upper() == 'Y':
-            self.search()
-            
-
-    def get_title(self):
-        title = input('Enter title: ')
-        matches = self._search(title)
-        if matches:
-            return self.get_match(matches)
-        else:
-            self.get_title()
   
 
     def print_matches(self, matches):
@@ -138,27 +117,63 @@ class MangaSee:
             print(f'{i+1}. {title}')
 
 
+    def get_title(self):
+        '''
+        Prompts user for the title to search for.
+
+        Args:
+            None.
+
+        Returns:
+            matches: Query results (list).
+        '''
+        title = input('Enter title: ')
+        matches = self._search(title)
+        if matches:
+            return self.get_match(matches)
+        else:
+            self.get_title()
+    
+    
     def get_match(self, matches):
+        '''
+        Prompts user to choose a title from matches.
+
+        Args:
+            None.
+
+        Returns:
+            match: Manga represented as a tuple (id_, title, manga_id, manga_url, cover_url)
+        '''
         self.print_matches(matches)
-        choice = input('Pick a series:')
+        choice = input('Enter the number for the manga:')
         if choice.isdigit():
             n = int(choice)
             if 0 < n <= len(matches):
-                print(matches[0])
                 return matches[n-1]
         self.get_match(matches)
 
 
     def get_chapter(self):
+        '''
+        Prompts user for chapter number.
+
+        Args:
+            None.
+
+        Returns:
+            ch: Chapter number (str).
+        '''
         ch = input('Enter chapter number: ')
         if ch.isdigit():
             return ch
         else:
             self.get_chapter()
 
+
     def create_database(self):
         '''
-        Update directory database, dictionary of title-manga pairs.
+        Update MangaSee database.
 
         Args:
             None.
@@ -183,11 +198,32 @@ class MangaSee:
                 'manga_url': manga_url,
                 'cover_url': cover_url}
             self._add_manga(manga_data)
+    
+    
+    def search(self):
+        '''
+        Search for a series.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        '''
+        title = input('Enter title: ')
+        matches = self._search(title)
+        if matches:
+            self.print_matches(matches)
+        else:
+            print(f'{title} has 0 matches. Try again.')
+        search_again = input('Search again (Y/N)? ')
+        if search_again.upper() == 'Y':
+            self.search()
 
 
     def download(self):
         '''
-        Populates chapter pages with direct link to page image.
+        Downloads a chapter.
         
         Args:
             None.
@@ -216,4 +252,4 @@ class MangaSee:
         Returns:
             None.
         '''
-        sys.exit()
+        sys.exit(0)
