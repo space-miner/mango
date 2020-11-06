@@ -42,7 +42,7 @@ def clear_screen():
     os.system('clear')
 
 
-def download_contents(url):
+def download_content(url):
     '''
     Downloads content of url to a file
 
@@ -54,4 +54,4 @@ def download_contents(url):
     '''
     filename = url.split('/')
     os.system(f'curl {url} -o {filename}')
-    print(f'Saving {filename}.')
+    print(f'Saving {filename}.png.')

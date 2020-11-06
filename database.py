@@ -55,7 +55,7 @@ class DatabaseManager:
     def select(self, table_name, criteria={}):
         query = f'SELECT * FROM {table_name}'
         if criteria:
-            placeholders = [f'{column} = ?' for column in criteria.keys()]
+            placeholders = [f'{column} = ? COLLATE NOCASE' for column in criteria.keys()]
             select_criteria = ' AND '.join(placeholders)
             query += f' WHERE {select_criteria}'
         return self._execute(

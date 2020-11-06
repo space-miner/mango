@@ -132,6 +132,7 @@ class MangaSee:
         if matches:
             return self.get_match(matches)
         else:
+            print('{title} has 0 matches. Try again.')
             self.get_title()
     
     
@@ -168,6 +169,7 @@ class MangaSee:
         if ch.isdigit():
             return ch
         else:
+            print('{ch} is not a valid chapter.')
             self.get_chapter()
 
 
@@ -216,9 +218,6 @@ class MangaSee:
             self.print_matches(matches)
         else:
             print(f'{title} has 0 matches. Try again.')
-        search_again = input('Search again (Y/N)? ')
-        if search_again.upper() == 'Y':
-            self.search()
 
 
     def download(self):
@@ -238,7 +237,7 @@ class MangaSee:
         for page in soup.find_all('img', 'img-fluid'):
             url = page['src']
             self._save_image(url)
-        utils.convert_to_pdf(ch)
+        utils.convert_to_pdf(ch.zfill(4)))
         utils.remove_images()
 
 
