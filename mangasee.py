@@ -237,7 +237,7 @@ class MangaSee:
         for page in soup.find_all('img', 'img-fluid'):
             url = page['src']
             self._save_image(url)
-        utils.convert_to_pdf(ch.zfill(4)))
+        utils.convert_to_pdf(ch.zfill(4))
         utils.remove_images()
 
 
